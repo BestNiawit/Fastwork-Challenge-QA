@@ -1,0 +1,23 @@
+# Mock configuration for the Fastwork API automation skeleton (uat environment).
+ENV_NAME: UAT
+API_BASE_URL: https://fastwork.co/api
+AUTH_BASE_URL: https://fastwork.co/auth
+DEFAULT_HEADERS:
+  Content-Type: application/json
+  Accept: application/json
+  X-App-Name: fastwork-automation
+SERVICE_ROUTES:
+  accounts:
+    list: /accounts
+    detail: /accounts/{account_id}
+  auth:
+    token: /auth/token
+  health:
+    ping: /health
+CREDENTIALS:
+  CLIENT_ID: uat-fastwork-client
+  CLIENT_SECRET: uat-fastwork-secret
+  DEFAULT_USER: qa.automation@fastwork.co
+TIMEOUT_SECONDS:
+  connect: 5
+  read: 15

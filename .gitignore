@@ -1,0 +1,30 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.env
+.venv/
+venv/
+
+# Robot Framework outputs
+output/
+log.html
+report.html
+*.robot.xml
+*.db
+
+# Editor directories
+.idea/
+.vscode/
+.ropeproject/
+
+# Misc
+*.log
+coverage/
+.pytest_cache/

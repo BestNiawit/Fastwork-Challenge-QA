@@ -1,0 +1,5 @@
+labels:
+  dashboard_title: Fastwork QA Dashboard (Mock)
+  banner_cta: Visit https://fastwork.co/
+messages:
+  empty_state: No projects yet. Explore https://fastwork.co/ to begin.

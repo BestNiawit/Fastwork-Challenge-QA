@@ -1,0 +1,162 @@
+# Mock fixtures that describe the account service behaviour and payment contract for the development environment.
+ACCOUNT_FIXTURES:
+  default_list:
+    description: Example dataset reflecting account balances on https://fastwork.co/.
+    request:
+      route: list
+      headers:
+        X-Test-Scenario: default-list
+    expected:
+      status: success
+      status_code: 200
+      data:
+        accounts:
+          - account_id: ACC-001
+            name: Fastwork Main Wallet
+            balance: 1520.75
+            currency: THB
+          - account_id: ACC-002
+            name: Fastwork USD Wallet
+            balance: 80.50
+            currency: USD
+  missing_auth:
+    description: Error scenario returned when the caller omits credentials while calling https://fastwork.co/.
+    request:
+      route: list
+    expected_error:
+      status: error
+      status_code: 401
+      message: Missing or invalid bearer token for https://fastwork.co/.
+  pending_activation:
+    description: Dataset for UI validation where an account is awaiting manual review on https://fastwork.co/.
+    data:
+      account_id: ACC-099
+      name: Pending Verification Wallet
+      status: pending_activation
+      balance: 0.0
+      currency: THB
+
+PAYMENT_TEMPLATES:
+  base_payment_request:
+    endpoint: /api/v1/payments
+    method: POST
+    headers:
+      Authorization: Bearer mock-valid-token
+      Content-Type: application/json
+    payload:
+      credit_card_number: "4111111111111111"
+      credit_card_owner_name: "John Doe"
+      expiration_date: "12/25"
+      cvv: "123"
+      amount: 1000.00
+      currency: "THB"
+      description: "Milestone R1"
+
+LONG_NAME_101: "ACCOUNT-HOLDER-NAME-ACCOUNT-HOLDER-NAME-ACCOUNT-HOLDER-NAME-ACCOUNT-HOLDER-NAME-XXXXXXXXXXXXXXXXXXXXX"
+
+PAYMENT_CASES:
+  API-001:
+    description: Successful payment
+    template: base_payment_request
+    expected_status: 200
+    expected_body:
+      status: SUCCESS
+  API-002:
+    description: Invalid format - missing CVV
+    template: base_payment_request
+    overrides:
+      payload:
+        cvv: null
+    expected_status: 400
+    expected_body:
+      error: INVALID_FORMAT
+  API-003:
+    description: Unauthorized - missing token
+    template: base_payment_request
+    overrides:
+      headers:
+        Authorization: ""
+    expected_status: 401
+    expected_body:
+      error: UNAUTHORIZE
+  API-004:
+    description: Insufficient funds
+    template: base_payment_request
+    overrides:
+      payload:
+        credit_card_number: "4000000000009995"
+    expected_status: 402
+    expected_body:
+      error: INSUFFICIENT_FUND
+  API-005:
+    description: Internal server error
+    template: base_payment_request
+    overrides:
+      payload:
+        trigger_fault: true
+    expected_status: 500
+    expected_body:
+      error: INTERNAL_SERVER_ERROR
+  API-010:
+    description: Amount just above minimum
+    template: base_payment_request
+    overrides:
+      payload:
+        amount: 0.02
+    expected_status: 200
+    expected_body:
+      status: SUCCESS
+  API-011:
+    description: Amount at minimum threshold
+    template: base_payment_request
+    overrides:
+      payload:
+        amount: 0.01
+    expected_status: 200
+    expected_body:
+      status: SUCCESS
+  API-012:
+    description: Amount less than minimum
+    template: base_payment_request
+    overrides:
+      payload:
+        amount: 0.009
+    expected_status: 400
+    expected_body:
+      error: AMOUNT_TOO_LOW
+  API-013:
+    description: Unsupported currency
+    template: base_payment_request
+    overrides:
+      payload:
+        currency: USD
+    expected_status: 400
+    expected_body:
+      error: UNSUPPORTED_CURRENCY
+  API-014:
+    description: Service closed window
+    template: base_payment_request
+    overrides:
+      payload:
+        simulated_time: "23:58"
+    expected_status: 503
+    expected_body:
+      error: SERVICE_CLOSED
+  API-015:
+    description: Owner name length validation
+    template: base_payment_request
+    overrides:
+      payload:
+        credit_card_owner_name: "ACCOUNT-HOLDER-NAME-ACCOUNT-HOLDER-NAME-ACCOUNT-HOLDER-NAME-ACCOUNT-HOLDER-NAME-XXXXXXXXXXXXXXXXXXXXX"
+    expected_status: 400
+    expected_body:
+      error: OWNER_NAME_TOO_LONG
+  API-016:
+    description: Account status inactive
+    template: base_payment_request
+    overrides:
+      payload:
+        sender_status: inactive
+    expected_status: 409
+    expected_body:
+      error: ACCOUNT_INACTIVE

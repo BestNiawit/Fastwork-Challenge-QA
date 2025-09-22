@@ -1,0 +1,122 @@
+UI_FIXTURES:
+  primary_site:
+    url: https://fastwork.co/
+    title_snippet: Fastwork Marketplace
+  quotation_rounds_valid:
+    total_rounds: 3
+    amounts:
+    - 1100
+    - 1200
+    - 900
+    total: 3200
+  quotation_rounds_low_total:
+    total_rounds: 3
+    amounts:
+    - 700
+    - 800
+    - 800
+  quotation_rounds_single:
+    total_rounds: 1
+    amounts:
+    - 1400
+  quotation_rounds_six:
+    total_rounds: 6
+    amounts:
+    - 600
+    - 600
+    - 600
+    - 600
+    - 600
+    - 600
+  notification_banner:
+    message: Validate UAT flows against https://fastwork.co/
+    severity: warning
+  buyer_credentials:
+    email: buyer.uat@fastwork.co
+    password: hunter2
+  freelancer_credentials:
+    email: freelancer.uat@fastwork.co
+    password: hunter2
+  quotation_rounds_low_amount:
+    total_rounds: 3
+    amounts:
+    - 100
+    - 120
+    - 130
+  quotation_rounds_past_dates:
+    total_rounds: 3
+    amounts:
+    - 1100
+    - 1200
+    - 900
+    dates:
+    - '2023-01-01'
+    - '2023-01-15'
+    - '2023-02-01'
+  chat_context:
+    product_name: Product UAT
+    freelancer_name: Freelancer UAT
+  quotation_messages:
+    minimum_rounds: minimum 2 rounds
+    maximum_rounds: maximum 5 rounds
+    low_amount: Amount per round must be more than 100 THB
+    low_total: Total must be at least 3000 THB
+    past_dates: Date cannot be in the past
+    missing_title: ชื่องาน
+  payment_scenarios:
+    default_success:
+      amount: 1100
+      currency: THB
+      expected_status: SUCCESS
+    buyer_acceptance:
+      amount: 1100
+      currency: THB
+      expected_status: SUCCESS
+    service_closed_window:
+      amount: 1100
+      currency: THB
+    unsupported_currency:
+      amount: 1100
+      currency: USD
+      expected_error: Only THB, VND, IDR supported
+    transferred_round_two:
+      amount: 1100
+      currency: THB
+      expected_status: TRANSFERRED
+UI_SELECTORS:
+  header_logo: css=header img[alt*="Fastwork"]
+  global_menu_items: css=nav[role="navigation"] a
+  search_input: css=input[placeholder*="หา"]
+  search_submit: css=button[type="submit"]
+  hero_banner: css=h1
+  login_button: text=เข้าสู่ระบบ
+  login_email: css=input[type="email"]
+  login_password: css=input[type="password"]
+  login_submit: css=button:has-text("เข้าสู่ระบบ")
+  chat_button: css=button:has-text("แชต")
+  existing_chat_thread: css=section[aria-label*="แชต"]
+  quotation_button: css=button:has-text("เสนอราคาแบบแบ่งชำระ")
+  add_round_button: css=button:has-text("เพิ่มรอบงาน")
+  round_title_input: css=input[name="milestoneTitle"]
+  round_description_input: css=textarea[name="milestoneDescription"]
+  round_deliverable_input: css=textarea[name="milestoneDeliverable"]
+  round_amount_input: css=input[name="milestoneAmount"]
+  round_date_input: css=input[name="milestoneDueDate"]
+  optional_revision_input: css=textarea[name="revisionNotes"]
+  optional_note_input: css=textarea[name="buyerNote"]
+  submit_quotation_button: css=button:has-text("ส่งใบเสนอราคา")
+  error_toast: css=div[role="alert"]
+  quotation_status_badge: css=span.status-badge
+  buyer_accept_button: css=button:has-text("ยอมรับ")
+  payment_amount_field: css=input[name="paymentAmount"]
+  payment_currency_select: css=select[name="currency"]
+  payment_submit_button: css=button:has-text("ชำระเงิน")
+  payment_result_banner: css=div[role="status"]
+  service_closed_message: css=div[role="alert"]:has-text("23:55–00:15")
+  inactive_account_banner: css=div[role="alert"]:has-text("บัญชี")
+  start_next_round_button: css=button:has-text("เริ่มงานรอบถัดไป")
+  approve_round_button: css=button:has-text("อนุมัติงาน")
+  terminate_job_button: css=button:has-text("ยุติการจ้างงาน")
+  confirmation_modal_confirm: css=button:has-text("ยืนยัน")
+  language_switch: text=ภาษาไทย
+  navigation_menu: css=nav a

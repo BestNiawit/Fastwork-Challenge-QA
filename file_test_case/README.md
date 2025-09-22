@@ -1,8 +1,10 @@
-# Fastwork Challenge QA
+# Fastwork Challenge QA Test Cases
 
-## Deliverables
-- `file_test_case/Test case fastwork.pdf` – offline snapshot of the documented UI and API scenarios.
-- Google Sheets test case matrix: [Create Quotation & Payment Flow](https://docs.google.com/spreadsheets/d/1ljCbdapNY2kIB0OVsBdS7Fy88L0fROL_tJQXAc09RGk/edit?usp=sharing).
+Primary resources:
+- `./Test case fastwork.pdf` – PDF snapshot of the documented UI and API scenarios.
+- Google Sheets tracker: [Create Quotation & Payment Flow](https://docs.google.com/spreadsheets/d/1ljCbdapNY2kIB0OVsBdS7Fy88L0fROL_tJQXAc09RGk/edit?usp=sharing).
+
+The suite covers milestone quotation creation, buyer payment flows, round progression, and `/api/v1/payments` service validation, including positive paths, field-level validation, boundary cases, and platform operating rules (currency support, blackout window, account status).
 
 ## Coverage Overview
 ### UI Milestone Quotation & Payment Flow
@@ -17,6 +19,6 @@
 - Error handling for missing or malformed fields, unauthorized access, insufficient funds, internal server errors, and inactive party status.
 - Boundary and rule-based scenarios for minimum amount acceptance, currency restrictions (THB/VND/IDR only), service blackout window, and cardholder name length.
 
-## Robot Framework Workspace
-- Automation assets live under `robot_framework/` with environment-specific YAML translations and a single lower-case import bundle (`imports/import.resource`).
-- See `robot_framework/README.md` for structure, dependency installation, and execution examples.
+## How to Use
+- Browse the Google Sheet for the latest editable matrix and status tracking.
+- Refer to `./Test case fastwork.pdf` when offline or when sharing a fixed snapshot of the documented cases.

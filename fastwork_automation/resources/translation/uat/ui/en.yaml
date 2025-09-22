@@ -1,0 +1,6 @@
+labels:
+  dashboard_title: Fastwork QA Dashboard (UAT Mock)
+  banner_cta: Visit https://fastwork.co/
+messages:
+  empty_state: No projects in the UAT dataset sourced from https://fastwork.co/
+  maintenance: Sandbox refresh at 01:00 daily.

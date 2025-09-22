@@ -1,0 +1,6 @@
+labels:
+  dashboard_title: แดชบอร์ดทีม QA (UAT)
+  banner_cta: ไปที่ https://fastwork.co/
+messages:
+  empty_state: ไม่มีข้อมูลโปรเจกต์ UAT จาก https://fastwork.co/
+  maintenance: ระบบจำลองจะรีเฟรชทุกวันเวลา 01:00 น.

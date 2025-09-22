@@ -1,0 +1,7 @@
+# Mock UI configuration for development environment.
+UI_SETTINGS:
+  base_url: https://fastwork.co/
+  default_viewport:
+    width: 1440
+    height: 900
+  default_locale: en

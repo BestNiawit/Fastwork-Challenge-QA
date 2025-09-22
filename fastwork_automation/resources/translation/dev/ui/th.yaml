@@ -1,0 +1,5 @@
+labels:
+  dashboard_title: แดชบอร์ดทีม QA (จำลอง)
+  banner_cta: ไปที่ https://fastwork.co/
+messages:
+  empty_state: ยังไม่มีโปรเจกต์ เริ่มจาก https://fastwork.co/ ได้เลย
