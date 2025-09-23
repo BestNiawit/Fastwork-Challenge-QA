@@ -1,6 +1,7 @@
 *** Variables ***
-${freelancer_chat_page_locator.chat_button_selector}     xpath=mock
-${freelancer_chat_page_locator.chat_thread_selector}     xpath=mock
-${freelancer_chat_page_locator.quotation_button_selector}     xpath=mock
-${freelancer_chat_page_locator.submit_selector}     xpath=mock
-${freelancer_chat_page_locator.freelancer_name}     xpath=mock
+# === Chat Inbox / Room ===
+${CHAT_PAGE.INBOX_LIST}        xpath=//mock
+${CHAT_PAGE.INBOX_ITEM}        xpath=//mock
+${CHAT_PAGE.NEW_CHAT_BUTTON}   xpath=//mock
+${CHAT_PAGE.ROOM_HEADER}       xpath=//mock
+${CHAT_PAGE.MESSAGE_ITEM}      xpath=//mock

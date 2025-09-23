@@ -1,0 +1,103 @@
+pipeline {
+  agent any
+
+  options {
+    ansiColor('xterm')
+    timestamps()
+    buildDiscarder(logRotator(numToKeepStr: '20'))
+  }
+
+  environment {
+    BASE_URL          = "https://www.fastwork.co/"
+    USER_EMAIL        = "BestNiawit@test.com"
+    USER_PASSWORD     = "secret"
+    SUITE             = "testcases/ui/**/*.robot"
+    HEADLESS          = "true"
+
+    REPORT_DIR        = "reports/${env.BUILD_NUMBER}"
+    ROBOT_OUTPUT_XML  = "${REPORT_DIR}/output.xml"
+    ROBOT_REPORT_HTML = "${REPORT_DIR}/report.html"
+    ROBOT_LOG_HTML    = "${REPORT_DIR}/log.html"
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        git branch: 'main',
+            url: 'https://github.com/BestNiawit/Fastwork-Challenge-QA.git'
+      }
+    }
+
+    stage('Set up Python env') {
+      steps {
+        sh '''
+          python3 -m venv .venv
+          . .venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+        '''
+      }
+    }
+
+    stage('Run Robot tests') {
+      steps {
+        sh '''
+          . .venv/bin/activate
+          mkdir -p "${REPORT_DIR}"
+          robot \
+            --outputdir "${REPORT_DIR}" \
+            --output    output.xml \
+            --report    report.html \
+            --log       log.html \
+            --variable  BASE_URL:"${BASE_URL}" \
+            --variable  Tags:"ui" \
+            ${SUITE}
+        '''
+      }
+    }
+
+    stage('Archive reports') {
+      steps {
+        archiveArtifacts artifacts: "${REPORT_DIR}/**", fingerprint: true
+      }
+    }
+  }
+
+  post {
+    always {
+      script {
+        def status = currentBuild.currentResult ?: 'SUCCESS'
+        def color  = (status == 'SUCCESS') ? '#2eb886' : (status == 'UNSTABLE' ? '#daa038' : '#e01e5a')
+        def emoji  = (status == 'SUCCESS') ? ':white_check_mark:' : (status == 'UNSTABLE' ? ':warning:' : ':x:'
+
+        def reportUrl = "${env.BUILD_URL}artifact/${ROBOT_REPORT_HTML}"
+        def logUrl    = "${env.BUILD_URL}artifact/${ROBOT_LOG_HTML}"
+
+        withCredentials([string(credentialsId: 'slack_webhook_url', variable: 'SLACK_WEBHOOK_URL')]) {
+          def payload = """
+          {
+            "attachments": [
+              {
+                "color": "${color}",
+                "title": "Fastwork QA – Build #${env.BUILD_NUMBER} ${emoji}",
+                "text": "*Status:* ${status}\\n*Job:* ${env.JOB_NAME}",
+                "actions": [
+                  { "type": "button", "text": "Report", "url": "${reportUrl}" },
+                  { "type": "button", "text": "Log",    "url": "${logUrl}" },
+                  { "type": "button", "text": "Build",  "url": "${env.BUILD_URL}" }
+                ]
+              }
+            ]
+          }
+          """.stripIndent().trim()
+
+          sh """
+            curl -s -X POST -H 'Content-type: application/json' \
+              --data '${payload.replace("'", "\\'")}' \
+              "${SLACK_WEBHOOK_URL}" >/dev/null 2>&1 || true
+          """
+        }
+      }
+    }
+  }
+}

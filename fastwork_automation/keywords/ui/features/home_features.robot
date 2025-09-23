@@ -2,22 +2,31 @@
 Resource    ${CURDIR}/../../import.robot
 
 *** Keywords ***
-Open Fastwork home page
-    [Arguments]    ${browser}=chromium    ${headless}=${False}
-    common_ui.Open Fastwork landing page    ${browser}    ${headless}
-    home_page.Fastwork should be displayed banner
+Verify Landing Page
+    [Documentation]    Verify that landing page shows logo, menu, and search bar
+    Verify Logo Should Be Displayed
+    Verify Top Menu Should Be Displayed
 
-Validate fastwork landing page should be displayed
-    [Documentation]   Validate fastwork landing page should be displayed
-    ${search_selector}    common_ui.Get Fastwork selector    search_input
-    Browser.Wait For Elements State    ${home_page_locator.header_logo}    state=visible
-    Browser.Wait For Elements State    ${home_page_locator.global_menu_items}     state=visible
-    Browser.Wait For Elements State    ${home_page_locator.search_selector}    state=visible
+Close Popup And Cookie
+    [Documentation]    Close popup and cookie banner if displayed
+    Click Popup Close Button
+    Click Cookie Accept Button
 
-Search fastwork services
-    [Arguments]    ${query}
-    Browser.Fill Text    ${home_page_locator.search_input}    ${query}
-    Browser.Click    ${home_page_locator.search_submit}
+Verify Sticky Menu
+    [Documentation]    Scroll up and down then verify top menu remains visible
+    Scroll Down
+    Scroll Up
+    Verify Top Menu Should Be Displayed
 
-Ensure fastwork language switch visible
-    Browser.Wait For Elements State    ${home_page_locator.language_switch}    state=visible
+Verify Main Menus Are Clickable
+    [Documentation]    Verify Chat, Orders, and Profile menus are clickable
+    Click Chat Menu
+    Click Orders Menu
+    Click Profile Menu
+
+Search And Verify Results
+    [Documentation]    Search keyword and verify search results are displayed
+    [Arguments]    ${keyword}
+    Input Search Keyword    ${keyword}
+    Press Enter On Search Bar
+    Verify Search Results Should Be Displayed

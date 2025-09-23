@@ -1,6 +1,6 @@
 *** Variables ***
-${login_page_locator.login_button}     xpath=mock
-${login_page_locator.email_selector}     xpath=mock
-${login_page_locator.password_selector}     xpath=mock
-${login_page_locator.login_submit}     xpath=mock
-${login_page_locator.login_button_selector}     xpath=mock
+# mock locator
+${LOGIN_PAGE.LOGIN_BUTTON}       xpath=//button[contains(., "Login") or contains(., "เข้าสู่ระบบ")]
+${LOGIN_PAGE.EMAIL_INPUT}        xpath=//input[@name="email" or @type="email"]
+${LOGIN_PAGE.PASSWORD_INPUT}     xpath=//input[@name="password" or @type="password"]
+${LOGIN_PAGE.SUBMIT_BUTTON}      xpath=//button[@type="submit" or contains(., "Sign In") or contains(., "เข้าสู่ระบบ")]

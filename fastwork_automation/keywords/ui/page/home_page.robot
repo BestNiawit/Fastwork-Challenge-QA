@@ -2,10 +2,6 @@
 Resource    ${CURDIR}/../../import.robot
 
 *** Keywords ***
-Fastwork should be displayed banner
-    Browser.Wait For Elements State    ${home_page_locator.hero_selector}    state=visible
-
-Fastwork should show search results for
-    [Arguments]    ${query}
-    ${current_url}    Browser.Get Url
-    BuiltIn.Should Contain    ${current_url}    ${query}
+Verify User Should Be Logged In
+    [Documentation]    Verify that the user is logged in by checking the user menu
+    Browser.Wait For Elements State    ${HOME_PAGE.USER_MENU}    visible    timeout=10s

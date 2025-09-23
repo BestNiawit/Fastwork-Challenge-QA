@@ -2,16 +2,20 @@
 Resource    ${CURDIR}/../../import.robot
 
 *** Keywords ***
-Click fastwork login modal
-    Browser.Click    ${login_page_locator.login_button_selector}
+Click Login Button
+    [Documentation]    Click on the login button to open login form
+    Browser.Click    ${LOGIN_PAGE.LOGIN_BUTTON}
 
-Input email on login form
-    [Arguments]   ${email}
-    Browser.Fill Text    ${login_page_locator.email_selector}   ${email} 
+Input Email
+    [Documentation]    Input user email address into the email field
+    [Arguments]    ${email}
+    Browser.Fill Text    ${LOGIN_PAGE.EMAIL_INPUT}    ${email}
 
-Input password on login form
-    [Arguments]   ${password}
-    Browser.Fill Text    ${login_page_locator.password_selector}   ${password}
+Input Password
+    [Documentation]    Input user password into the password field
+    [Arguments]    ${password}
+    Browser.Fill Text    ${LOGIN_PAGE.PASSWORD_INPUT}    ${password}
 
-Submit fastwork login form
-    Browser.Click    ${login_page_locator.login_submit}
+Click Submit Button
+    [Documentation]    Click on the submit button to login
+    Browser.Click    ${LOGIN_PAGE.SUBMIT_BUTTON}
