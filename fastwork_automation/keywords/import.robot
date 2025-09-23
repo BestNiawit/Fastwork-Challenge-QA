@@ -5,6 +5,7 @@ Library    Collections
 Library    JSONLibrary
 Library    RequestsLibrary
 Library    Browser
+Library    String
 
 # Environment-scoped configuration and data.
 Variables    ${CURDIR}/../resources/settings/${ENV}/api/setting.yaml
@@ -26,6 +27,7 @@ Resource    ${CURDIR}/../keywords/api/features/payment_api_feature.robot
 # UI features keywords.
 Resource    ${CURDIR}/../keywords/ui/common_ui.robot
 Resource    ${CURDIR}/../keywords/ui/features/home_features.robot
+Resource    ${CURDIR}/../keywords/ui/features/login_features.robot
 Resource    ${CURDIR}/../keywords/ui/features/dashboard_ui_feature.robot
 Resource    ${CURDIR}/../keywords/ui/features/fastwork_site_ui_feature.robot
 
@@ -34,6 +36,9 @@ Resource    ${CURDIR}/../keywords/ui/page/home_page.robot
 Resource    ${CURDIR}/../keywords/ui/page/login_page.robot
 Resource    ${CURDIR}/../keywords/ui/page/freelancer_chat_page.robot
 
+# test data
+Variables    ${CURDIR}/../../fastwork_automation/resources/testdata/${ENV}/ui/test_data.yaml
+
 *** Variables ***
-${ENV}    dev
+${ENV}    uat
 ${LANG}   en

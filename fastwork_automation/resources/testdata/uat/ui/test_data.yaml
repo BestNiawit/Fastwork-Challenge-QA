@@ -120,3 +120,13 @@ UI_SELECTORS:
   confirmation_modal_confirm: css=button:has-text("ยืนยัน")
   language_switch: text=ภาษาไทย
   navigation_menu: css=nav a
+
+tc_001:
+  username:  test@mail.com
+  password:   Abc123#
+
+tc_002:
+  username:  test02@mail.com
+  password:   Abc123#
+  freelancer_01:  Name01
+  freelancer_02:  Name02
