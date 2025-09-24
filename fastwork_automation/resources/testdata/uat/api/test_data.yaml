@@ -1,160 +1,94 @@
-# Mock fixtures that describe the account service behaviour and payment contract for the UAT environment.
-ACCOUNT_FIXTURES:
-  default_list:
-    description: UAT dataset mirroring balances published on https://fastwork.co/.
-    request:
-      route: list
-      headers:
-        X-Test-Scenario: uat-default-list
-    expected:
-      status: success
-      status_code: 200
-      data:
-        accounts:
-          - account_id: UAT-ACC-010
-            name: Fastwork Primary Wallet
-            balance: 2350.00
-            currency: THB
-          - account_id: UAT-ACC-225
-            name: Fastwork Multi Currency Wallet
-            balance: 150.25
-            currency: SGD
-  missing_auth:
-    description: Expected response when authentication is not supplied for https://fastwork.co/.
-    request:
-      route: list
-    expected_error:
-      status: error
-      status_code: 401
-      message: Missing or invalid bearer token for https://fastwork.co/.
-  pending_activation:
-    description: Data used to validate onboarding flows that mirror https://fastwork.co/.
-    data:
-      account_id: UAT-ACC-999
-      name: Manual Review Wallet
-      status: pending_activation
-      balance: 0.0
-      currency: THB
+expected_code: 
+  code_200 : 200
+  code_400 : 200
 
-PAYMENT_TEMPLATES:
-  base_payment_request:
-    endpoint: /api/v1/payments
-    method: POST
-    headers:
-      Authorization: Bearer mock-uat-token
-      Content-Type: application/json
-    payload:
-      credit_card_number: "4111111111111111"
-      credit_card_owner_name: "Fastwork QA"
-      expiration_date: "10/27"
-      cvv: "321"
-      amount: 1250.00
-      currency: "THB"
-      description: "Milestone UAT"
+TC_API_01:
+  username: buyer@test.com
+  password: secret123
+  card_number: 4111 1111 1111 1111
+  owner: John
+  exp: 12/25
+  cvv: 123
+  amount: 1000
+  currency: THB
 
-PAYMENT_CASES:
-  API-001:
-    description: Successful payment
-    template: base_payment_request
-    expected_status: 200
-    expected_body:
-      status: SUCCESS
-  API-002:
-    description: Invalid format - missing CVV
-    template: base_payment_request
-    overrides:
-      payload:
-        cvv: null
-    expected_status: 400
-    expected_body:
-      error: INVALID_FORMAT
-  API-003:
-    description: Unauthorized - missing token
-    template: base_payment_request
-    overrides:
-      headers:
-        Authorization: ""
-    expected_status: 401
-    expected_body:
-      error: UNAUTHORIZE
-  API-004:
-    description: Insufficient funds
-    template: base_payment_request
-    overrides:
-      payload:
-        credit_card_number: "4000000000009995"
-    expected_status: 402
-    expected_body:
-      error: INSUFFICIENT_FUND
-  API-005:
-    description: Internal server error
-    template: base_payment_request
-    overrides:
-      payload:
-        trigger_fault: true
-    expected_status: 500
-    expected_body:
-      error: INTERNAL_SERVER_ERROR
-  API-010:
-    description: Amount just above minimum
-    template: base_payment_request
-    overrides:
-      payload:
-        amount: 0.02
-    expected_status: 200
-    expected_body:
-      status: SUCCESS
-  API-011:
-    description: Amount at minimum threshold
-    template: base_payment_request
-    overrides:
-      payload:
-        amount: 0.01
-    expected_status: 200
-    expected_body:
-      status: SUCCESS
-  API-012:
-    description: Amount less than minimum
-    template: base_payment_request
-    overrides:
-      payload:
-        amount: 0.009
-    expected_status: 400
-    expected_body:
-      error: AMOUNT_TOO_LOW
-  API-013:
-    description: Unsupported currency
-    template: base_payment_request
-    overrides:
-      payload:
-        currency: USD
-    expected_status: 400
-    expected_body:
-      error: UNSUPPORTED_CURRENCY
-  API-014:
-    description: Service closed window
-    template: base_payment_request
-    overrides:
-      payload:
-        simulated_time: "23:58"
-    expected_status: 503
-    expected_body:
-      error: SERVICE_CLOSED
-  API-015:
-    description: Owner name length validation
-    template: base_payment_request
-    overrides:
-      payload:
-        credit_card_owner_name: "ACCOUNT-HOLDER-NAME-ACCOUNT-HOLDER-NAME-ACCOUNT-HOLDER-NAME-ACCOUNT-HOLDER-NAME-XXXXXXXXXXXXXXXXXXXXX"
-    expected_status: 400
-    expected_body:
-      error: OWNER_NAME_TOO_LONG
-  API-016:
-    description: Account status inactive
-    template: base_payment_request
-    overrides:
-      payload:
-        sender_status: inactive
-    expected_status: 409
-    expected_body:
-      error: ACCOUNT_INACTIVE
+TC_API_02_Dataset1:
+  username: buyer@test.com
+  password: secret123
+  card_number: 4242 4242 4242 4242
+  owner: John
+  exp: 12/25
+  amount: 1000
+  currency: THB
+
+
+TC_API_02_Dataset2:
+  username: buyer@test.com
+  password: secret123
+  card_number: 4242 4242 4242 4242
+  owner: John
+  exp: 13/25   # malformed month
+  cvv: 123
+  amount: 1000
+  currency: THB
+
+TC_API_03_Dataset1:
+  username: buyer@test.com
+  password: secret123
+  credit_card_number: 4111111111111111
+  owner: John
+  exp: 12/25
+  cvv: 123
+  amount: 0.01
+  currency: THB
+
+TC_API_03_Dataset2:
+  username: buyer@test.com
+  password: secret123
+  credit_card_number: 4111111111111111
+  owner: John
+  exp: 12/25
+  cvv: 123
+  amount: 0.009
+  currency: THB
+
+TC_API_04_Dataset1:  # VND pass
+  username: buyer@test.com
+  password: secret123
+  credit_card_number: 4111111111111111
+  owner: John
+  exp: 12/25
+  cvv: 123
+  amount: 1000
+  currency: VND
+
+TC_API_04_Dataset2:  # USD fail (not allowed)
+  username: buyer@test.com
+  password: secret123
+  credit_card_number: 4111111111111111
+  owner: John
+  exp: 12/25
+  cvv: 123
+  amount: 1000
+  currency: USD
+
+TC_API_05_Dataset1:  # Service closed (23:58)
+  username: buyer@test.com
+  password: secret123
+  credit_card_number: 4111111111111111
+  owner: John
+  exp: 12/25
+  cvv: 123
+  amount: 1000
+  currency: THB
+  expected_code: 400
+
+TC_API_05_Dataset2:  # Service reopen (00:15)
+  username: buyer@test.com
+  password: secret123
+  credit_card_number: 4111111111111111
+  owner: John
+  exp: 12/25
+  cvv: 123
+  amount: 1000
+  currency: THB

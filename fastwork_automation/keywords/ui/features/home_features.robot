@@ -2,31 +2,12 @@
 Resource    ${CURDIR}/../../import.robot
 
 *** Keywords ***
-Verify Landing Page
-    [Documentation]    Verify that landing page shows logo, menu, and search bar
-    Verify Logo Should Be Displayed
-    Verify Top Menu Should Be Displayed
-
-Close Popup And Cookie
-    [Documentation]    Close popup and cookie banner if displayed
-    Click Popup Close Button
-    Click Cookie Accept Button
-
-Verify Sticky Menu
-    [Documentation]    Scroll up and down then verify top menu remains visible
-    Scroll Down
-    Scroll Up
-    Verify Top Menu Should Be Displayed
-
-Verify Main Menus Are Clickable
-    [Documentation]    Verify Chat, Orders, and Profile menus are clickable
-    Click Chat Menu
-    Click Orders Menu
-    Click Profile Menu
-
-Search And Verify Results
-    [Documentation]    Search keyword and verify search results are displayed
+Verify Landing Page Shows Header_Menus_And_Search
+    [Documentation]    Verify logo, menus, and search bar are visible and usable; search returns results.
     [Arguments]    ${keyword}
-    Input Search Keyword    ${keyword}
-    Press Enter On Search Bar
-    Verify Search Results Should Be Displayed
+    home_page.Close Popup And Cookie If Present
+    home_page.Scroll Page And Verify Sticky Menu
+    home_page.Click Chat Menu
+    home_page.Click Jobs Menu
+    home_page.Click Profile Menu
+    home_page.Search For Keyword    ${keyword}

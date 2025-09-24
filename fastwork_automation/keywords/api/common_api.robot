@@ -5,41 +5,53 @@ Library    Collections
 Library    JSONLibrary
 
 *** Keywords ***
-Build default headers
-    [Arguments]    ${access_token}=${EMPTY}    &{overrides}
-    ${headers}    Collections.Create Dictionary
-    FOR    ${key}    ${value}    IN    &{DEFAULT_HEADERS}
-        Collections.Set To Dictionary    ${headers}    ${key}=${value}
-    END
-    FOR    ${key}    ${value}    IN    &{overrides}
-        Collections.Set To Dictionary    ${headers}    ${key}=${value}
-    END
-    IF    "${access_token}" != ""
-        Collections.Set To Dictionary    ${headers}    Authorization=Bearer ${access_token}
-    END
-    RETURN    ${headers}
+Create API Session
+    [Documentation]    Create HTTP session using BASE_URL from settings
+    RequestsLibrary.Create Session    api    ${BASE_URL}
 
-Resolve service route
-    [Arguments]    ${group}    ${name}
-    ${group_routes}    Collections.Get From Dictionary    ${SERVICE_ROUTES}    ${group}
-    ${route}    Collections.Get From Dictionary    ${group_routes}    ${name}
-    RETURN    ${route}
+Build Authorization Header From Token
+    [Documentation]    Build Authorization header and Content-Type application/json
+    [Arguments]    ${token}
+    ${headers}=    BuiltIn.Create Dictionary    Authorization=Bearer ${token}    Content-Type=application/json
+    [Return]    ${headers}
 
-Get account fixture
-    [Arguments]    ${fixture_name}
-    ${fixture}    Collections.Get From Dictionary    ${ACCOUNT_FIXTURES}    ${fixture_name}
-    RETURN    ${fixture}
+Post JSON And Return Response
+    [Documentation]    Send POST request to the given path with JSON body and headers
+    [Arguments]    ${path}    ${headers}    ${body}
+    ${resp}=    RequestsLibrary.POST    api    ${path}    json=${body}    headers=${headers}
+    [Return]    ${resp}
 
-Mock successful response
-    [Arguments]    ${payload}    ${status_code}=200
-    ${response}    Collections.Create Dictionary    status=success    status_code=${status_code}    data=${payload}
-    RETURN    ${response}
+Verify Response Status Code Should Be
+    [Documentation]    Verify HTTP status code equals expected
+    [Arguments]    ${resp}    ${expected_code}
+    BuiltIn.Should Be Equal As Integers    ${resp.status_code}    ${expected_code}
 
-Mock error response
-    [Arguments]    ${message}    ${status_code}=400
-    ${response}    Collections.Create Dictionary    status=error    status_code=${status_code}    message=${message}
-    RETURN    ${response}
+Verify Response JSON Field Should Equal
+    [Documentation]    Verify JSON field equals expected value (flat key only)
+    [Arguments]    ${resp}    ${key}    ${expected}
+    ${json}=    BuiltIn.Evaluate    __import__('json').loads(${resp.text})
+    BuiltIn.Should Be Equal    ${json["${key}"]}    ${expected}
 
-Validate response matches expectation
-    [Arguments]    ${response}    ${expected}
-    BuiltIn.Should Be Equal    ${response}    ${expected}
+Save Response JSON Field Into Test Variable If Present
+    [Documentation]    Save JSON field into ${var_name} if the field exists
+    [Arguments]    ${resp}    ${key}    ${var_name}
+    ${json}=    BuiltIn.Evaluate    __import__('json').loads(${resp.text})
+    ${exists}=  BuiltIn.Run Keyword And Return Status    BuiltIn.Set Variable    ${json["${key}"]}
+    BuiltIn.Run Keyword If    ${exists}    BuiltIn.Set Test Variable    ${${var_name}}    ${json["${key}"]}
+
+Build Json Headers
+    [Documentation]    Return JSON header
+    ${headers}=    BuiltIn.Create Dictionary    Content-Type=application/json
+    [Return]    ${headers}
+
+Extract JSON From Response
+    [Documentation]    Convert response.text to JSON object
+    [Arguments]    ${resp}
+    ${json}=    BuiltIn.Evaluate    __import__('json').loads(${resp.text})
+    [Return]    ${json}
+
+Verify Response JSON Field Should Contain
+    [Documentation]    Verify JSON contains field with expected value
+    [Arguments]    ${resp}    ${key}    ${expected}
+    ${json}=    BuiltIn.Evaluate    __import__('json').loads(${resp.text})
+    BuiltIn.Should Contain    ${json["${key}"]}    ${expected}
