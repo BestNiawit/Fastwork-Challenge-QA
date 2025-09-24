@@ -43,3 +43,21 @@ Send Payment With Given Amount And Verify Status Code
     ...    currency=${currency}
     ${resp}=    common_api.Post JSON And Return Response    ${PAYMENT_API}    ${headers}    ${body}
     common_api.Verify Response Status Code Should Be    ${resp}    ${expected_code}
+
+Send Payment And Verify Invalid Card Number
+    [Documentation]    Send payment with invalid card number and verify 400 + error message
+    [Arguments]    ${token}    ${card_number}    ${owner}    ${exp}    ${cvv}    ${amount}    ${currency}
+    common_api.Create API Session
+    ${headers}=    common_api.Build Authorization Header From Token    ${token}
+    ${body}=    BuiltIn.Create Dictionary
+    ...    credit_card_number=${card_number}
+    ...    credit_card_owner_name=${owner}
+    ...    expiration_date=${exp}
+    ...    cvv=${cvv}
+    ...    amount=${amount}
+    ...    currency=${currency}
+    ${resp}=    common_api.Post JSON And Return Response    ${PAYMENT_API}    ${headers}    ${body}
+    common_api.Verify Response Status Code Should Be    ${resp}    400
+    ${json}=    common_api.Extract JSON From Response    ${resp}
+    BuiltIn.Should Be Equal    ${json['error']}    Invalid request
+    BuiltIn.Should Be Equal    ${json['message']}  Credit card number is invalid

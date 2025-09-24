@@ -92,3 +92,13 @@ TC_API_05_Dataset2:  # Service reopen (00:15)
   cvv: 123
   amount: 1000
   currency: THB
+
+TC_API_06_InvalidCard:
+  username: buyer@test.com
+  password: secret123
+  credit_card_number: 1234567890123456   # Invalid card number
+  owner: John
+  exp: 12/25
+  cvv: 123
+  amount: 1000
+  currency: THB
