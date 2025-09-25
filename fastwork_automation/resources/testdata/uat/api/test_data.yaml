@@ -2,6 +2,13 @@ expected_code:
   code_200 : 200
   code_400 : 200
 
+auth_cases:
+  no_token:
+    expected_code: 401
+  invalid_token:
+    token: INVALID_TOKEN
+    expected_code: 401
+
 TC_API_01:
   username: buyer@test.com
   password: secret123
@@ -102,3 +109,12 @@ TC_API_06_InvalidCard:
   cvv: 123
   amount: 1000
   currency: THB
+
+TC_API_07_NoToken:
+  credit_card_number: 4111111111111111
+  owner: John
+  exp: 12/25
+  cvv: 123
+  amount: 1000
+  currency: THB
+  expected_code: 401

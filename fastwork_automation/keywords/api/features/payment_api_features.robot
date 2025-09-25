@@ -61,3 +61,18 @@ Send Payment And Verify Invalid Card Number
     ${json}=    common_api.Extract JSON From Response    ${resp}
     BuiltIn.Should Be Equal    ${json['error']}    Invalid request
     BuiltIn.Should Be Equal    ${json['message']}  Credit card number is invalid
+
+Send Payment Without Authorization And Verify Unauthorized
+    [Documentation]    Send payment without Authorization header and expect HTTP 401
+    [Arguments]    ${card_number}    ${owner}    ${exp}    ${cvv}    ${amount}    ${currency}    ${expected_code}
+    common_api.Create API Session
+    ${headers}=    common_api.Build Json Headers
+    ${body}=    BuiltIn.Create Dictionary
+    ...    credit_card_number=${card_number}
+    ...    credit_card_owner_name=${owner}
+    ...    expiration_date=${exp}
+    ...    cvv=${cvv}
+    ...    amount=${amount}
+    ...    currency=${currency}
+    ${resp}=    common_api.Post JSON And Return Response    ${PAYMENT_API}    ${headers}    ${body}
+    common_api.Verify Response Status Code Should Be    ${resp}    ${expected_code}
