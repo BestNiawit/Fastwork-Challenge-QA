@@ -33,4 +33,4 @@ This repository is submitted as the homework deliverable for the Fastwork QA cha
 ## How To Use This Submission
 - Review the PDF and Google Sheets artifacts to understand the full manual coverage.
 - Leverage the Robot Framework suite for quick regression checks on critical user flows.
-- Provide feedback or scoring directly on the shared spreadsheet or via repository issues.
+- Simple perf test
