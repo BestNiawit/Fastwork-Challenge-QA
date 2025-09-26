@@ -13,22 +13,33 @@ export const options = {
 };
 
 export default function(){
-    const url = 'https://dummyjson.com/auth/login';
-    const payload = JSON.stringify({
-        username: 'kminchelle',
-        password: '0lelplR'
-    });
 
-    const params = {
+    const url = 'https://practicetestautomation.com/practice-test-login/';
+
+    const headers = {
         headers: {
             'Content-Type': 'application/json',
         },
     };
 
-    const res = http.post(url,payload,params);
+    const res = http.get(url,headers);
 
     check(res, {
-        'is status 200': (r) => r.status === 200,
-        'is res body has username': (r) => r.body.includes('kminchelle'),
+        'is status 200': (r) => res.status === 200
+    });
+}
+
+export function Login(){
+    const url = 'https://practicetestautomation.com/practice-test-login/';
+    const payload = JSON.stringify({
+        username: 'student',
+        password: 'Password123'
+    });
+
+    const res = http.post(url,headers);
+
+    check(res, {
+        'is status 200': (r) => res.status === 200,
+        'is res body has username': (res) => res.body.includes('kminchelle'),
     });
 }
