@@ -1,22 +1,18 @@
 # JMeter Load Test Project
 
-## Structure
-- testplans/ : .jmx plans grouped (smoke, regression)
-- data/      : CSV/JSON test data
-- config/    : env configs + global.properties
-- results/   : raw .jtl (ignored by git)
-- reports/   : HTML reports (ignored by git)
-- lib/       : plugin jars if needed
-- bin/       : run scripts (local & docker)
-- .github/workflows/ : CI workflow
-- docker/    : docker-compose for Grafana/InfluxDB
+## Folder Guide
+- `testplans/`: JMeter test plans. Each folder (smoke, regression) holds a plan.
+- `data/`: CSV or JSON files used inside the tests.
+- `config/`: Environment settings and `global.properties`.
+- `results/`: Raw `.jtl` files. Git ignores this folder.
+- `reports/`: HTML reports. Git ignores this folder too.
+- `lib/`: Extra JMeter plugins if you need them.
+- `bin/`: Shell scripts to run the tests on your machine or in Docker.
+- `.github/workflows/`: GitHub Actions workflow files.
+- `docker/`: Docker Compose files for Grafana and InfluxDB.
 
-## Usage
-- Local:
+## How To Run
+- Local machine:
   ```bash
   bin/run_local.sh testplans/smoke/sample_smoke.jmx
-  ```
-- Docker:
-  ```bash
-  bin/run_docker.sh testplans/smoke/sample_smoke.jmx
   ```
