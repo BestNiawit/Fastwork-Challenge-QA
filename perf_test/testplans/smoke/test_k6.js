@@ -1,45 +1,60 @@
-import http from "k6/http";
-import { check, sleep } from "k6";
+import http from 'k6/http';
+import { check, sleep } from 'k6';
 
 export const options = {
-    stages: [
-        { duration: '2m', target: 100 }, // simulate ramp up of traffic from 1 to 100 users over 5 minutes
-        { duration: '5m', target: 1000}, // stay at 1000 users for 10 minutes
-        { duration: '2m', target: 0}, // ramp down to 0 user
-    ],
+    scenarios: {
+        smoke: {
+            executor: 'ramping-vus',
+            stages: [
+                { duration: '1m', target: 100 },
+                { duration: '2m', target: 500 },
+                { duration: '1m', target: 100 },
+                { duration: '2m', target: 500 },
+                { duration: '1m', target: 0 },
+            ],
+            gracefulRampDown: '30s', // ✅ ใช้อันนี้แทน maxDuration
+        },
+    },
     thresholds: {
-        'http_req_duration': ['p(95)<500'], //99% or requests must complete below 0.5s
+        http_req_failed: ['rate<0.01'],
+        http_req_duration: ['p(95)<600'],
     },
 };
 
-export default function(){
+export default function () {
+    const res = http.get('https://test.k6.io/');
+    check(res, {
+        'is status 200': (r) => r.status === 200,
+    });
+    sleep(1);
+}
 
-    const url = 'https://practicetestautomation.com/practice-test-login/';
+export function Test_Login() {
+    const payload = JSON.stringify({
+        name : "emilys",
+        password : "emilyspass"
+    });
 
-    const headers = {
+    const params = {
         headers: {
             'Content-Type': 'application/json',
         },
     };
-
-    const res = http.get(url,headers);
-
-    check(res, {
-        'is status 200': (r) => res.status === 200
-    });
-}
-
-export function Login(){
-    const url = 'https://practicetestautomation.com/practice-test-login/';
-    const payload = JSON.stringify({
-        username: 'student',
-        password: 'Password123'
-    });
-
-    const res = http.post(url,headers);
+    const res = http.post('https://dummyjson.com/auth/login', payload, params);
 
     check(res, {
-        'is status 200': (r) => res.status === 200,
-        'is res body has username': (res) => res.body.includes('kminchelle'),
-    });
-}
+        'login ok': (r) => r.status === 200,
+        'verify acccount name is emilys': (r) => r.body.includes('emilys'),
+        'verify homepage text content': (r) => r.body.includes('Collection of simple web-pages suitable for load testing'),
+        'response body contains access_token': (r) => r.body.includes('accessToken')
+    }, { type: 'login' });
+
+    const authToken = res.json('accessToken');
+      check(authToken, {
+        'token is not null': (t) => t !== null,
+        'token is a string': (t) => typeof t === 'string',
+        'token has expected length': (t) => t.length > 0, // Or a specific length
+      });
+};
+
+sleep(0.2);
